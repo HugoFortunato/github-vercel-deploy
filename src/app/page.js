@@ -5,6 +5,8 @@ export default function Home() {
   return (
     <main className={styles.main}>
     <span>this is a new feature!</span>
+    <span>this is a new feature!</span>
+
     </main>
   )
 }
