@@ -6,6 +6,7 @@ export default function Home() {
     <main className={styles.main}>
       <span>Testing new preview file!</span>
       <span>Testing new preview file!</span>
+      <span>Testing new preview file!</span>
 
     </main>
   )
