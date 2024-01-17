@@ -5,11 +5,13 @@ env:
 on:
   pull_request:
     branches: ["main"]
+    types: [labeled]
 
 jobs:
   Deploy-Preview:
+    if: ${{ github.event.label.name == 'bug' }}
     runs-on: ubuntu-latest
-    if: "contains(github.event.pull_request.labels.*.name, 'review')"
+
     steps:
       - uses: actions/checkout@v2
       - name: Install Vercel CLI
