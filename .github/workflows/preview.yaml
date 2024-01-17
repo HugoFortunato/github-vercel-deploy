@@ -9,7 +9,7 @@ on:
 
 jobs:
   Deploy-Preview:
-    if: contains(github.event.pull_request.labels.*.name, 'ready-to-dev')
+    if: ${{ github.event.label.name == 'ready-to-dev' }}
     runs-on: ubuntu-latest
 
     steps:
