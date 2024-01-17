@@ -9,6 +9,7 @@ on:
 jobs:
   Deploy-Preview:
     runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'review')
     steps:
       - uses: actions/checkout@v2
       - name: Install Vercel CLI
