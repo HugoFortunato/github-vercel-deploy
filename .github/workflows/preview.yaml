@@ -5,20 +5,22 @@ env:
 on:
   pull_request:
     branches: ["main"]
-    types: [labeled, unlabeled, opened, edited, synchronize]
+    types:
+      - labeled
+      - opened
+      - unlabeled
 
 jobs:
   Deploy-Preview:
-    if: ${{ github.event.label.name == 'ready-to-dev' }}
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      with:
-        REQUIRED_LABELS_ANY: "ready-to-dev"
-        REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['ready-to-dev']"
-        BANNED_LABELS: "banned"
+      - name: Fail if PR is a draft
+        if: contains(github.event.pull_request.labels.*.name, 'draft') # Move the condition to here
+          run: |
+            echo "This PR is currently a draft."
+            exit 1
 
+      - uses: actions/checkout@v2
       - name: Install Vercel CLI
         run: yarn global add --global vercel@latest
       - name: Pull Vercel Environment Information
