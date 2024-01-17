@@ -8,6 +8,5 @@ export default function Home() {
       <span>Testing new preview file!</span>
       <span>Testing new preview file!</span>
     </main>
-    s
   )
 }
