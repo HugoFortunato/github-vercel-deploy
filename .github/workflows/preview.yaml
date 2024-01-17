@@ -9,7 +9,7 @@ on:
 
 jobs:
   Deploy-Preview:
-    if: ${{ github.event.label.name == 'bug' }}
+    if: ${{ github.event.label.name == 'ready-to-dev' }}
     runs-on: ubuntu-latest
 
     steps:
