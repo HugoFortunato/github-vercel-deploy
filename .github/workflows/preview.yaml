@@ -8,8 +8,22 @@ on:
     types: [labeled]
 
 jobs:
+  Check-Ready-To-Dev-Label:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if 'ready-to-dev' label is present
+        id: check_label
+        run: |
+          PR_NUMBER=$(curl -sSL "${{ github.api_url }}/repos/${{ github.repository }}/pulls?head=${{ github.head_ref }}&base=${{ github.base_ref }}" | jq -r ".[0].number")
+          LABEL_PRESENT=$(curl -sSL "${{ github.api_url }}/repos/${{ github.repository }}/issues/${PR_NUMBER}/labels" | jq -r '.[].name' | grep 'ready-to-dev' || true)
+          echo "LABEL_PRESENT=$LABEL_PRESENT" >> $GITHUB_ENV
+
+      - name: Exit if 'ready-to-dev' label is not present
+        run: exit ${{ steps.check_label.outputs.LABEL_PRESENT == 'ready-to-dev' }}
+
   Deploy-Preview:
-    if: ${{ github.event.label.name == 'bug' }}
+    if: success()
     runs-on: ubuntu-latest
 
     steps:
