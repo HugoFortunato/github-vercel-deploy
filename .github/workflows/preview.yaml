@@ -11,16 +11,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Check for "review" label
+        run: |
+          # Obter o número da Pull Request
+          PR_NUMBER=$(curl -sSL "${{ github.api_url }}/repos/${{ github.repository }}/pulls" | jq -r ".[] | select(.head.sha == \"${{ github.sha }}\") | .number")
+
+          # Verificar se a label "review" está presente na Pull Request
+          if [[ ! $(curl -sSL "${{ github.api_url }}/repos/${{ github.repository }}/issues/${PR_NUMBER}/labels" | jq -r '.[].name') =~ "review" ]]; then
+            echo "Erro: A label 'review' não foi adicionada à Pull Request. Por favor, adicione a label antes de prosseguir."
+            exit 1
+          fi
+
       - name: Install Vercel CLI
         run: yarn global add --global vercel@latest
+
       - name: Pull Vercel Environment Information
-
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
       - name: Install Dependencies and Health Code
-
         run: yarn install && yarn lint && yarn build
-      - name: Build Project Artifacts
 
+      - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
